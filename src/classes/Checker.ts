@@ -19,7 +19,7 @@ export class TextChecker {
      * @returns true if found a thief
      */
     ultiScan(string: string) {
-        return this.hasSpecialChar(string) && this.hasSpecialChar(string) && this.hasSpecialChar(string);
+        return this.hasSpace(string) && this.hasNumber(string) && this.hasSpecialChar(string);
     }
 }
 

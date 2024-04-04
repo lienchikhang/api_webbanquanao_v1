@@ -1,2 +1,5 @@
 1712228629685::cate.controller.ts
 1712236781909::color.controller.ts
+1712240026219::price.controller.ts
+1712240044033::price.controller.ts
+1712240112418::price.controller.ts
