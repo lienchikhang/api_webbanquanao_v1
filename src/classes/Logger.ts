@@ -1,4 +1,5 @@
 import { handleWriteError } from "../controllers/log.controller";
+import path from 'path';
 
 interface Type {
     write(): void;
@@ -18,10 +19,12 @@ export class Logger {
 }
 
 export class Error implements Type {
-    constructor(private data: string) {
+    constructor(private data: string, private fileName: string) {
+        this.data = data + "::";
+        this.fileName = path.basename(fileName)
     }
     public write() {
-        handleWriteError(this.data);
+        handleWriteError(this.data + this.fileName);
     }
 }
 

@@ -29,7 +29,7 @@ const getTypes = async (req: Request, res: Response) => {
         return ResponseCreator.create(200, 'Successfully!', convertTypes).send(res);
 
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500).send(res);
     }
@@ -64,7 +64,7 @@ const createType = async (req: Request, res: Response) => {
         return ResponseCreator.create(201, 'Create successfully!', convertedType).send(res);
 
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500).send(res);
     }
@@ -104,7 +104,7 @@ const updateType = async (req: Request, res: Response) => {
         return ResponseCreator.create(200, 'Update successfully!', convertedType).send(res);
 
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500)?.send(res);
     }
@@ -145,7 +145,7 @@ const deleteType = async (req: Request, res: Response) => {
 
 
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500).send(res);
     }
@@ -181,10 +181,10 @@ const undoDeleteType = async (req: Request, res: Response) => {
 
         const convertedType = Data.convertType(deletedType);
 
-        return ResponseCreator.create(200, 'Undo successfully!', convertedType).send(res);
+        return ResponseCreator.create(200, 'Undo successfully!', deletedType).send(res);
 
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500).send(res);
     }

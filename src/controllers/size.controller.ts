@@ -26,7 +26,7 @@ const getSizes = async (req: Request, res: Response) => {
 
         return ResponseCreator.create(201, 'Successfully!', convertedSizes).send(res);
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500).send(res);
     }
@@ -60,7 +60,7 @@ const createSize = async (req: Request, res: Response) => {
 
         return ResponseCreator.create(201, 'Successfully!', convertedSize).send(res);
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500).send(res);
     }
@@ -97,7 +97,7 @@ const deleteSize = async (req: Request, res: Response) => {
 
         return ResponseCreator.create(200, 'Delete successfully!', convertedSize).send(res);
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500).send(res);
     }
@@ -135,7 +135,7 @@ const undoDeleteSize = async (req: Request, res: Response) => {
 
         return ResponseCreator.create(200, 'Undo successfully!', convertedSize).send(res);
     } catch (error) {
-        const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
         logger.write();
         return ResponseCreator.create(500).send(res);
     }
