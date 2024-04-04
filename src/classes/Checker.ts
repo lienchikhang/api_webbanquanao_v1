@@ -48,6 +48,13 @@ export class MailChecker {
     }
 }
 
+
+export class ObjectChecker {
+    isEmptyObject(obj: Object) {
+        return Object.keys(obj).length === 0;
+    };
+}
+
 // class Checker {
 //     static create(type?: string) {
 //         switch (type) {

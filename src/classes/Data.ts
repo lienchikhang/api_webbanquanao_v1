@@ -1,6 +1,7 @@
 import { ICate } from "../interfaces/cate.interface";
 import { IColor } from "../interfaces/color.interface";
 import { IPrice } from "../interfaces/price.interface";
+import { IProduct, IProducts } from "../interfaces/product.interface";
 import { ISize } from "../interfaces/size.interface";
 import { IType } from "../interfaces/type.interface";
 
@@ -85,6 +86,39 @@ class Data {
             priceId: color.price_id,
             colorNum: color.price_num,
         }
+    }
+
+    static convertProduct = (product: IProduct) => {
+        return {
+            product_id: product.product_id,
+            product_name: product.product_name,
+            product_desc: product.product_desc,
+            type: product.type ? product.type.type_name : null,
+            cate: product.cate ? product.cate.cate_name : null,
+            price: product.price ? product.price.price_num : null,
+            images: product.Images ? product.Images.map(image => image.img_url) : [],
+            sizes: product.Product_Sizes ? product.Product_Sizes.map(size => ({
+                size_id: size.size_id,
+                size_key: size.size ? size.size.size_key : null
+            })) : [],
+            colors: product.Product_Colors ? product.Product_Colors.map(color => ({
+                color_id: color.color_id,
+                color_hex: color.color ? color.color.color_hex : null,
+                color_name: color.color ? color.color.color_name : null
+            })) : []
+        };
+    }
+
+    static convertProducts = (products: IProducts[]) => {
+        return products.map((product) => (
+            {
+                id: product.product_id,
+                name: product.product_name,
+                desc: product.product_desc,
+                price: product.Prices ? product.Prices.price_num : null,
+                images: product.Images ? product.Images.map((image) => image.img_url) : [],
+            }
+        ))
     }
 }
 
