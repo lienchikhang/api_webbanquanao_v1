@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model CartDetail {
+  cart_id    Int
+  product_id Int
+  amount     Int      @db.TinyInt
+  price      Int
+  Carts      Carts    @relation(fields: [cart_id], references: [cart_id], onDelete: NoAction, onUpdate: NoAction, map: "CartDetail_ibfk_1")
+  Products   Products @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "CartDetail_ibfk_2")
+
+  @@id([cart_id, product_id])
+  @@index([product_id], map: "product_id")
+}
+
+model Carts {
+  cart_id     Int          @id @default(autoincrement())
+  user_id     Int
+  total_price Int          @default(0)
+  CartDetail  CartDetail[]
+  Users       Users        @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "Carts_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model Categories {
+  cate_id    Int        @id @default(autoincrement())
+  cate_name  String     @db.VarChar(100)
+  is_deleted Boolean?   @default(dbgenerated("b'0'")) @db.Bit(1)
+  Products   Products[]
+}
+
+model Colors {
+  color_id      Int             @id @default(autoincrement())
+  color_hex     String          @db.VarChar(6)
+  is_deleted    Boolean?        @default(dbgenerated("b'0'")) @db.Bit(1)
+  color_name    String          @db.VarChar(50)
+  Product_Color Product_Color[]
+}
+
+model Images {
+  img_id     Int      @id @default(autoincrement())
+  img_url    String   @db.Text
+  product_id Int
+  is_deleted Boolean? @default(dbgenerated("b'0'")) @db.Bit(1)
+  Products   Products @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "Images_ibfk_1")
+
+  @@index([product_id], map: "product_id")
+}
+
+model OrderDetail {
+  order_id   Int
+  product_id Int
+  amount     Int      @db.TinyInt
+  price      Int
+  Orders     Orders   @relation(fields: [order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction, map: "OrderDetail_ibfk_1")
+  Products   Products @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "OrderDetail_ibfk_2")
+
+  @@id([order_id, product_id])
+  @@index([product_id], map: "product_id")
+}
+
+model Orders {
+  order_id    Int           @id @default(autoincrement())
+  user_id     Int
+  order_date  DateTime      @db.Timestamp(0)
+  total_price Int           @default(0)
+  OrderDetail OrderDetail[]
+  Users       Users         @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "Orders_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model Prices {
+  price_id   Int        @id @default(autoincrement())
+  price_num  Int
+  is_deleted Boolean?   @default(dbgenerated("b'0'")) @db.Bit(1)
+  Products   Products[]
+}
+
+model Product_Color {
+  color_id   Int
+  product_id Int
+  Colors     Colors   @relation(fields: [color_id], references: [color_id], onDelete: NoAction, onUpdate: NoAction, map: "Product_Color_ibfk_1")
+  Products   Products @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "Product_Color_ibfk_2")
+
+  @@id([color_id, product_id])
+  @@index([product_id], map: "product_id")
+}
+
+model Product_Size {
+  product_id Int
+  size_id    Int
+  Products   Products @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "Product_Size_ibfk_1")
+  Sizes      Sizes    @relation(fields: [size_id], references: [size_id], onDelete: NoAction, onUpdate: NoAction, map: "Product_Size_ibfk_2")
+
+  @@id([product_id, size_id])
+  @@index([size_id], map: "size_id")
+}
+
+model Products {
+  product_id    Int             @id @default(autoincrement())
+  product_name  String          @db.VarChar(255)
+  product_desc  String          @db.Text
+  type_id       Int
+  cate_id       Int
+  price_id      Int
+  is_deleted    Boolean?        @default(dbgenerated("b'0'")) @db.Bit(1)
+  CartDetail    CartDetail[]
+  Images        Images[]
+  OrderDetail   OrderDetail[]
+  Product_Color Product_Color[]
+  Product_Size  Product_Size[]
+  Types         Types           @relation(fields: [type_id], references: [type_id], onDelete: NoAction, onUpdate: NoAction, map: "Products_ibfk_1")
+  Categories    Categories      @relation(fields: [cate_id], references: [cate_id], onDelete: NoAction, onUpdate: NoAction, map: "Products_ibfk_2")
+  Prices        Prices          @relation(fields: [price_id], references: [price_id], onDelete: NoAction, onUpdate: NoAction, map: "Products_ibfk_3")
+  Rates         Rates[]
+
+  @@index([cate_id], map: "cate_id")
+  @@index([price_id], map: "price_id")
+  @@index([product_id], map: "product_id")
+  @@index([type_id], map: "type_id")
+}
+
+model Rates {
+  product_id Int
+  user_id    Int
+  rate_date  DateTime? @db.Timestamp(0)
+  rate_num   Int       @db.TinyInt
+  Products   Products  @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "Rates_ibfk_1")
+  Users      Users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "Rates_ibfk_2")
+
+  @@id([product_id, user_id])
+  @@index([user_id], map: "user_id")
+}
+
+model Sizes {
+  size_id      Int            @id @default(autoincrement())
+  is_deleted   Boolean?       @default(dbgenerated("b'0'")) @db.Bit(1)
+  size_key     String         @db.VarChar(10)
+  Product_Size Product_Size[]
+}
+
+model Types {
+  type_id    Int        @id @default(autoincrement())
+  type_name  String     @db.VarChar(100)
+  is_deleted Boolean?   @default(dbgenerated("b'0'")) @db.Bit(1)
+  Products   Products[]
+}
+
+model Users {
+  user_id       Int       @id @default(autoincrement())
+  pass_word     String?   @db.VarChar(250)
+  birth_year    DateTime? @db.Date
+  first_name    String?   @db.VarChar(150)
+  last_name     String?   @db.VarChar(150)
+  user_role     String?   @default("client") @db.VarChar(50)
+  email         String    @db.VarChar(255)
+  google_app_id String?   @db.VarChar(255)
+  face_app_id   String?   @db.VarChar(255)
+  is_deleted    Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  refresh_token String?   @db.Text
+  Carts         Carts[]
+  Orders        Orders[]
+  Rates         Rates[]
+}
