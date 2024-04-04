@@ -9,8 +9,8 @@ class ConcreteResponse {
 }
 
 class Success extends ConcreteResponse {
-    constructor(mess?: string, content?: any) {
-        super(200, mess, content);
+    constructor(code: number, mess?: string, content?: any) {
+        super(code, mess, content);
     }
 }
 
@@ -34,7 +34,7 @@ class ResponseCreator {
                 return new Error(code, mess, content);
             }
             default:
-                return new Success(mess, content);
+                return new Success(code, mess, content);
         }
     }
 }
