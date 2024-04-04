@@ -3,7 +3,6 @@ import Prisma from "../classes/Prisma";
 import { NumberChecker, TextChecker } from "../classes/Checker";
 import ResponseCreator from "../classes/ResponseCreator";
 import { Error, Logger } from "../classes/Logger";
-import path from 'path';
 import Data from "../classes/Data";
 
 const model = Prisma.getInstance().create();
