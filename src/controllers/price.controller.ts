@@ -71,7 +71,7 @@ const createPrice = async (req: Request, res: Response) => {
         const { priceNum } = req.body;
 
         //checking syntax priceNum
-        if (!priceNum || !numberChecker.isNumber(priceNum) || textChecker.hasSpace(priceNum) || textChecker.hasSpecialChar(priceNum)) return ResponseCreator.create(400, 'Invalid price!', priceNum).send(res);
+        if (!priceNum || !numberChecker.isNumber(priceNum) || !numberChecker.scanPrice(priceNum) || textChecker.hasSpace(priceNum) || textChecker.hasSpecialChar(priceNum)) return ResponseCreator.create(400, 'Invalid price!', priceNum).send(res);
 
         const newPrice = await model.prices.create({
             data: {
@@ -100,7 +100,7 @@ const updatePrice = async (req: Request, res: Response) => {
         if (!numberChecker.isNumber(priceId) || textChecker.hasSpace(priceId) || textChecker.hasSpecialChar(priceId)) return ResponseCreator.create(400, 'Invalid priceId!', priceId).send(res);
 
         //check newPriceNum
-        if (!numberChecker.isNumber(newPriceNum) || textChecker.hasSpace(newPriceNum) || textChecker.hasSpecialChar(newPriceNum)) return ResponseCreator.create(400, 'Invalid price!', newPriceNum).send(res);
+        if (!numberChecker.isNumber(newPriceNum) || !numberChecker.scanPrice(newPriceNum) || textChecker.hasSpace(newPriceNum) || textChecker.hasSpecialChar(newPriceNum)) return ResponseCreator.create(400, 'Invalid price!', newPriceNum).send(res);
 
         //checking is exist
         const isExist = await model.prices.findUnique({
