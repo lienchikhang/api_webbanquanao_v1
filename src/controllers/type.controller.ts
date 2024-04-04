@@ -4,6 +4,7 @@ import ResponseCreator from "../classes/ResponseCreator";
 import { MailChecker, NumberChecker, TextChecker } from "../classes/Checker";
 import { Error, Logger } from "../classes/Logger";
 import path from 'path';
+import Data from "../classes/Data";
 
 const model = Prisma.getInstance().create();
 const textChecker = new TextChecker();
@@ -23,9 +24,9 @@ const getTypes = async (req: Request, res: Response) => {
         });
 
         //convert data before send it back
+        const convertTypes = Data.convertTypes(types);
 
-
-        return ResponseCreator.create(200, 'Successfully!', types).send(res);
+        return ResponseCreator.create(200, 'Successfully!', convertTypes).send(res);
 
     } catch (error) {
         const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
@@ -57,8 +58,10 @@ const createType = async (req: Request, res: Response) => {
             }
         })
 
+        const convertedType = Data.convertType(newType);
 
-        return ResponseCreator.create(201, 'Create successfully!', newType).send(res);
+
+        return ResponseCreator.create(201, 'Create successfully!', convertedType).send(res);
 
     } catch (error) {
         const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
@@ -96,7 +99,9 @@ const updateType = async (req: Request, res: Response) => {
             }
         })
 
-        return ResponseCreator.create(200, 'Update successfully!', updatedType).send(res);
+        const convertedType = Data.convertType(updatedType)
+
+        return ResponseCreator.create(200, 'Update successfully!', convertedType).send(res);
 
     } catch (error) {
         const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
@@ -134,7 +139,9 @@ const deleteType = async (req: Request, res: Response) => {
             }
         })
 
-        return ResponseCreator.create(200, 'Delete successfully!', deletedType).send(res);
+        const convertedType = Data.convertType(deletedType);
+
+        return ResponseCreator.create(200, 'Delete successfully!', convertedType).send(res);
 
 
     } catch (error) {
@@ -172,7 +179,9 @@ const undoDeleteType = async (req: Request, res: Response) => {
             }
         })
 
-        return ResponseCreator.create(200, 'Undo successfully!', deletedType).send(res);
+        const convertedType = Data.convertType(deletedType);
+
+        return ResponseCreator.create(200, 'Undo successfully!', convertedType).send(res);
 
     } catch (error) {
         const logger = new Logger(new Error(new Date().getTime().toString() + "::" + path.basename(__filename)));
