@@ -1,4 +1,5 @@
 import { ICate } from "../interfaces/cate.interface";
+import { IColor } from "../interfaces/color.interface";
 import { ISize } from "../interfaces/size.interface";
 import { IType } from "../interfaces/type.interface";
 
@@ -48,6 +49,24 @@ class Data {
         return {
             cateId: cate.cate_id,
             cateName: cate.cate_name,
+        }
+    }
+
+    static convertColors(colors: IColor[]) {
+        return colors.map(color => (
+            {
+                colorId: color.color_id,
+                colorName: color.color_name,
+                colorHex: color.color_hex,
+            }
+        ))
+    }
+
+    static convertColor(color: IColor) {
+        return {
+            colorId: color.color_id,
+            colorName: color.color_name,
+            colorHex: color.color_hex,
         }
     }
 }

@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { Time } from '../classes/Time';
 
-const outDirDefault = path.join(process.cwd(), 'src', 'logs', 'errors');
+const outDirDefault = path.join(process.cwd(), 'public', 'logs', 'errors');
 
 
 export const handleWriteError = (error: string) => {
