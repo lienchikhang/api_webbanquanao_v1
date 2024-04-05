@@ -532,28 +532,40 @@ const uploadImageProduct = async (req: Request, res: Response) => {
         //check productId
         if (!productId || !numberChecker.isNumber(productId) || textChecker.hasSpace(productId) || textChecker.hasSpecialChar(productId)) return ResponseCreator.create(400, 'Invalid product id', productId).send(res);
 
+        const isExist = await model.products.findUnique({
+            where: {
+                product_id: parseInt(productId),
+            }
+        })
+
+        if (!isExist) ResponseCreator.create(404, 'Product not found', productId).send(res);
+
         //write  and compress images
         const idDirPath = path.join(process.cwd(), 'public', 'assets', 'images', 'inDir');
         const isDone = await FileConcreteReader.write(idDirPath);
         if (isDone) {
             const uploadedFiles = await FileConcreteReader.read();
-            const imagesData = uploadedFiles.map(img_url => ({
-                product_id: parseInt(productId),
-                img_url: img_url,
-            }));
-            const uploadedImgs = [];
-            for (const img of imagesData) {
-                const uploaded = await model.images.create({
-                    data: {
-                        product_id: img.product_id,
-                        img_url: img.img_url,
-                    },
-                })
+            if (uploadedFiles) {
+                const imagesData = uploadedFiles.map(img_url => ({
+                    product_id: parseInt(productId),
+                    img_url: img_url,
+                }));
+                const uploadedImgs = [];
+                for (const img of imagesData) {
+                    const uploaded = await model.images.create({
+                        data: {
+                            product_id: img.product_id,
+                            img_url: img.img_url,
+                        },
+                    })
 
-                uploadedImgs.push(uploaded);
+                    uploadedImgs.push(uploaded);
+                    FileConcreteReader.delete();
+                }
+
+                return ResponseCreator.create(201, 'Create successfully!', uploadedImgs).send(res);
             }
             // const images = await model.images.createMany({ data: imagesData, skipDuplicates: true })
-            return ResponseCreator.create(201, 'Create successfully!', uploadedImgs).send(res);
         }
 
     } catch (error) {

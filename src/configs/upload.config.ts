@@ -20,11 +20,12 @@ export const upload = multer({
 cloudinary.config({
     cloud_name: 'drfjok8d7',
     api_key: '319771257136443',
-    api_secret: 'aGlS8yvKAnYu1JBtT_hzLvFCunQ'
+    api_secret: 'aGlS8yvKAnYu1JBtT_hzLvFCunQ',
+    keep_original: true
 });
 
 export const uploadCloud = (idImg: string, imgUrl: string) => {
     return cloudinary.uploader.upload(imgUrl,
-        { public_id: idImg, folder: 'web_ban_quan_ao' });
+        { public_id: idImg, folder: 'web_ban_quan_ao', upload_preset: 't0leeq7d' });
 }
 
