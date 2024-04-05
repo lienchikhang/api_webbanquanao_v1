@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProduct, deleteProduct, getProductById, getProducts, undoDeleteProduct, updateProduct, uploadImageProduct } from "../controllers/product.controller";
+import { createProduct, deleteProduct, getProductById, getProducts, rateProduct, undoDeleteProduct, updateProduct, uploadImageProduct } from "../controllers/product.controller";
 import { upload } from "../configs/upload.config";
 
 const productRoute = Router();
@@ -11,5 +11,6 @@ productRoute.post('/upload-images/:productId', upload.array('images', 7), upload
 productRoute.put('/update-product/:productId', updateProduct);
 productRoute.delete('/delete-product/:productId', deleteProduct);
 productRoute.put('/recover-product/:productId', undoDeleteProduct);
+productRoute.put('/rate-product/:productId', rateProduct);
 
 export default productRoute;

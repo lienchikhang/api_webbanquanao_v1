@@ -593,6 +593,86 @@ const uploadImageProduct = async (req: Request, res: Response) => {
 
 }
 
+const rateProduct = async (req: Request, res: Response) => {
+    //get userId
+    //get productId
+    //verify userId & productId
+    //create rate
+
+    try {
+        const { userId } = req.payload;
+        const { productId } = req.params;
+        const { rateNum } = req.body;
+
+        if (!userId
+            || !numberChecker.isNumber(userId)
+            || textChecker.hasSpace(userId)
+            || textChecker.hasSpecialChar(userId)
+        ) return ResponseCreator.create(400, 'Invalid user').send(res);
+
+        if (!productId
+            || !numberChecker.isNumber(productId)
+            || textChecker.hasSpace(productId)
+            || textChecker.hasSpecialChar(productId)
+        ) return ResponseCreator.create(400, 'Invalid product id', productId).send(res);
+
+        if (!rateNum
+            || !numberChecker.isNumber(rateNum)
+            || textChecker.hasSpace(rateNum)
+            || textChecker.hasSpecialChar(rateNum)
+        ) return ResponseCreator.create(400, 'Invalid rate').send(res);
+
+        const isExistUser = await model.users.findUnique({
+            where: {
+                user_id: parseInt(userId),
+            }
+        })
+
+        if (!isExistUser) ResponseCreator.create(404, 'User not found').send(res);
+
+        const isExistProduct = await model.products.findUnique({
+            where: {
+                product_id: parseInt(productId),
+            }
+        })
+
+        if (!isExistProduct) ResponseCreator.create(404, 'Product not found').send(res);
+
+        const rated = await model.rates.create({
+            data: {
+                product_id: parseInt(productId),
+                user_id: parseInt(userId),
+                rate_num: parseInt(rateNum),
+                rate_date: new Date(),
+            }
+        })
+
+        return ResponseCreator.create(201, 'Rate successfully!', rated).send(res);
+
+
+    } catch (error) {
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
+        logger.write();
+        console.log('error:: ', error);
+    }
+}
+
+const unRateProduct = async (req: Request, res: Response) => {
+    //get userId
+    //get productId
+    //verify userId & productId
+    //delete rate
+
+    try {
+
+    } catch (error) {
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
+        logger.write();
+        console.log('error:: ', error);
+    }
+}
+
+
 export {
     getProducts,
     getProductById,
@@ -600,5 +680,7 @@ export {
     updateProduct,
     deleteProduct,
     undoDeleteProduct,
-    uploadImageProduct
+    uploadImageProduct,
+    rateProduct,
+    unRateProduct,
 }
