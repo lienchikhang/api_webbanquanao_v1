@@ -6,6 +6,7 @@ import colorRoute from './color.route';
 import authRoute from './auth.route';
 import priceRoute from './price.route';
 import productRoute from './product.route';
+import cartRoute from './cart.route';
 
 const rootRoute = Router();
 
@@ -16,6 +17,7 @@ rootRoute.use('/color', colorRoute);
 rootRoute.use('/auth', authRoute);
 rootRoute.use('/price', priceRoute);
 rootRoute.use('/product', productRoute);
+rootRoute.use('/cart', cartRoute);
 
 
 export default rootRoute;

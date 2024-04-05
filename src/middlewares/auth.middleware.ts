@@ -3,6 +3,15 @@ import ResponseCreator from "../classes/ResponseCreator";
 import { decodeToken, verifyToken } from "../controllers/token.controller";
 import { Error, Logger } from "../classes/Logger";
 
+// Khai báo một interface mới cho đối tượng Request của Express
+declare global {
+    namespace Express {
+        export interface Request {
+            payload: any; // Hoặc kiểu dữ liệu của payload của bạn
+        }
+    }
+}
+
 const verifyClient = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -25,6 +34,8 @@ const verifyClient = async (req: Request, res: Response, next: NextFunction) => 
 
         //decode
         const payload = decodeToken(token);
+
+        req.payload = payload;
         return next();
 
     } catch (error) {
