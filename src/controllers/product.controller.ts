@@ -270,11 +270,6 @@ const getProductById = async (req: Request, res: Response) => {
 const createProduct = async (req: Request, res: Response) => {
     try {
         const { productName, productDesc, typeId, cateId, priceId } = req.body;
-        const files = req.files as IFile[];
-
-        console.log({ productName, productDesc, typeId, cateId, priceId })
-        console.log('files:: ', files);
-
 
         //checking syntax productName
         if (!productName || textChecker.hasSpace(productName) || textChecker.hasSpecialChar(productName)) return ResponseCreator.create(400, 'Invalid productName!', productName).send(res);
@@ -291,9 +286,6 @@ const createProduct = async (req: Request, res: Response) => {
         //checking syntax priceId
         if (!priceId || !numberChecker.isNumber(priceId) || textChecker.hasSpace(priceId) || textChecker.hasSpecialChar(priceId)) return ResponseCreator.create(400, 'Invalid priceId!', priceId).send(res);
 
-        //check images
-        if (!files) return ResponseCreator.create(400, 'Invalid images!', files).send(res);
-
         //check exist product name
         const doesNameExist = productName && await model.products.findFirst({
             where: {
@@ -303,15 +295,27 @@ const createProduct = async (req: Request, res: Response) => {
         if (doesNameExist) return ResponseCreator.create(400, 'Product has already existed!', productName).send(res);
 
         //check typeId exists
-        const isTypeExist = await model.types.findUnique(typeId);
+        const isTypeExist = await model.types.findUnique({
+            where: {
+                type_id: parseInt(typeId)
+            }
+        });
         if (!isTypeExist) return ResponseCreator.create(404, 'Type not found!', typeId).send(res);
 
         //check cateId exists
-        const isCateExist = await model.categories.findUnique(cateId);
+        const isCateExist = await model.categories.findUnique({
+            where: {
+                cate_id: parseInt(cateId)
+            }
+        });
         if (!isCateExist) return ResponseCreator.create(404, 'Cate not found!', cateId).send(res);
 
         //check priceId exists
-        const isPriceExist = await model.prices.findUnique(priceId);
+        const isPriceExist = await model.prices.findUnique({
+            where: {
+                price_id: parseInt(priceId),
+            }
+        });
         if (!isPriceExist) return ResponseCreator.create(404, 'Price not found!', priceId).send(res);
 
         const newProduct = await model.products.create({
@@ -382,19 +386,31 @@ const updateProduct = async (req: Request, res: Response) => {
 
         //check typeId exists
         if (typeId) {
-            const isTypeExist = await model.types.findUnique(typeId);
+            const isTypeExist = await model.types.findUnique({
+                where: {
+                    type_id: parseInt(priceId),
+                }
+            });
             if (!isTypeExist) return ResponseCreator.create(404, 'Type not found!', typeId).send(res);
         }
 
         //check cateId exists
         if (cateId) {
-            const isCateExist = await model.categories.findUnique(cateId);
+            const isCateExist = await model.categories.findUnique({
+                where: {
+                    cate_id: parseInt(cateId),
+                }
+            });
             if (!isCateExist) return ResponseCreator.create(404, 'Cate not found!', cateId).send(res);
         }
 
         //check priceId exists
         if (priceId) {
-            const isPriceExist = await model.prices.findUnique(priceId);
+            const isPriceExist = await model.prices.findUnique({
+                where: {
+                    price_id: parseInt(priceId),
+                }
+            });
             if (!isPriceExist) return ResponseCreator.create(404, 'Price not found!', priceId).send(res);
         }
 

@@ -87,7 +87,7 @@ const updateType = async (req: Request, res: Response) => {
         //checking is exist
         const isExist = await model.types.findFirst({
             where: {
-                type_id: typeId,
+                type_id: parseInt(typeId),
             }
         })
 
@@ -95,7 +95,7 @@ const updateType = async (req: Request, res: Response) => {
 
         const updatedType = await model.types.update({
             data: { type_name: newTypeName }, where: {
-                type_id: typeId,
+                type_id: parseInt(typeId),
             }
         })
 

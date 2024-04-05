@@ -94,18 +94,18 @@ class Data {
             product_id: product.product_id,
             product_name: product.product_name,
             product_desc: product.product_desc,
-            type: product.type ? product.type.type_name : null,
-            cate: product.cate ? product.cate.cate_name : null,
-            price: product.price ? product.price.price_num : null,
+            type: product.Types ? product.Types.type_name : null,
+            cate: product.Categories ? product.Categories.cate_name : null,
+            price: product.Prices ? product.Prices.price_num : null,
             images: product.Images ? product.Images.map(image => image.img_url) : [],
-            sizes: product.Product_Sizes ? product.Product_Sizes.map(size => ({
+            sizes: product.Product_Size ? product.Product_Size.map(size => ({
                 size_id: size.size_id,
-                size_key: size.size ? size.size.size_key : null
+                size_key: size.Sizes ? size.Sizes.size_key : null
             })) : [],
-            colors: product.Product_Colors ? product.Product_Colors.map(color => ({
+            colors: product.Product_Color ? product.Product_Color.map(color => ({
                 color_id: color.color_id,
-                color_hex: color.color ? color.color.color_hex : null,
-                color_name: color.color ? color.color.color_name : null
+                color_hex: color.Colors ? color.Colors.color_hex : null,
+                color_name: color.Colors ? color.Colors.color_name : null
             })) : []
         };
     }

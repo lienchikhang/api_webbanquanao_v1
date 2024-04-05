@@ -37,29 +37,29 @@ export interface IProduct {
     product_id: number,
     product_name: string,
     product_desc: string,
-    type?: {
+    Types?: {
         type_name: string,
     },
-    cate?: {
+    Categories?: {
         cate_name: string,
     },
-    price?: {
+    Prices?: {
         price_num: number
     },
     Images?: {
         img_url: string
     }[],
-    Product_Sizes?: {
+    Product_Size?: {
         size_id: number,
-        size: {
+        Sizes: {
             size_key: string,
         }
     }[],
-    Product_Colors?: {
+    Product_Color?: {
         color_id: number,
-        color: {
-            color_hex: string,
+        Colors: {
             color_name: string,
+            color_hex: string,
         }
     }[]
 }
