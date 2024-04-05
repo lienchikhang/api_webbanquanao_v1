@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, text } from "express";
 import Prisma from "../classes/Prisma";
 import ResponseCreator from "../classes/ResponseCreator";
 import { Error, Logger } from "../classes/Logger";
@@ -314,37 +314,6 @@ const createProduct = async (req: Request, res: Response) => {
         const isPriceExist = await model.prices.findUnique(priceId);
         if (!isPriceExist) return ResponseCreator.create(404, 'Price not found!', priceId).send(res);
 
-        //upload image
-        // fs.readdir(destPath, async (err, files) => {
-        //     for (const file of files) {
-        //         const outDir = path.join(process.cwd(), 'src', 'assets', 'admin', 'after', file);
-        //         try {
-        //             const semiTrans = await sharp(path.join(destPath, file))
-        //                 .png({ quality: 5 })
-        //                 .toFile(outDir);
-        //             console.log('File processed successfully:', semiTrans);
-        //         } catch (error) {
-        //             console.error('Error processing file:', error);
-        //         }
-        //     }
-        // })
-
-        // const filesInDir = fs.readdirSync(destPath);
-        // for (const file of filesInDir) {
-        //     const outDir = path.join(process.cwd(), 'src', 'assets', 'admin', 'after', file);
-        //     try {
-        //         const semiTrans = await sharp(path.join(destPath, file))
-        //             .toFormat('png')
-        //             .png({ quality: 5 })
-        //             .toFile(outDir);
-        //         console.log('File processed successfully:', semiTrans);
-        //     } catch (error) {
-        //         console.error('Error processing file:', error);
-        //     }
-        // }
-        // console.log('info img:: ', semiTrans);
-
-
         const newProduct = await model.products.create({
             data: {
                 product_name: productName,
@@ -355,22 +324,8 @@ const createProduct = async (req: Request, res: Response) => {
             }
         })
 
-        //:: không thể gửi cùng lúc formdata và body
-        //upload images
-        const idDirPath = path.join(process.cwd(), 'public', 'assets', 'images', 'inDir');
-        FileConcreteReader.write(idDirPath);
 
-        //save image database
-        const uploadedFiles = await FileConcreteReader.read();
-
-        const imagesData = uploadedFiles.map(img_url => ({
-            product_id: newProduct.product_id,
-            img_url: img_url,
-        }));
-
-        const images = await model.images.createMany({ data: imagesData, skipDuplicates: true })
-
-        return ResponseCreator.create(201, 'Successfully!', { newProduct, images }).send(res);
+        return ResponseCreator.create(201, 'Successfully!', newProduct).send(res);
     } catch (error) {
         console.log('error:: ', error);
         const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
@@ -528,6 +483,7 @@ const deleteProduct = async (req: Request, res: Response) => {
 }
 
 //::role::admin
+//:: do không thể gửi cùng lúc formdata và body nên phải tách ra 1 route riêng
 const undoDeleteProduct = async (req: Request, res: Response) => {
     try {
         const { productId } = req.params;
@@ -564,11 +520,57 @@ const undoDeleteProduct = async (req: Request, res: Response) => {
     }
 }
 
+//::role::admin
+const uploadImageProduct = async (req: Request, res: Response) => {
+    try {
+        const files = req.files;
+        const { productId } = req.params;
+
+        //check files
+        if (!files || !files.length) return ResponseCreator.create(400, 'Invalid product images', files).send(res);
+
+        //check productId
+        if (!productId || !numberChecker.isNumber(productId) || textChecker.hasSpace(productId) || textChecker.hasSpecialChar(productId)) return ResponseCreator.create(400, 'Invalid product id', productId).send(res);
+
+        //write  and compress images
+        const idDirPath = path.join(process.cwd(), 'public', 'assets', 'images', 'inDir');
+        const isDone = await FileConcreteReader.write(idDirPath);
+        if (isDone) {
+            const uploadedFiles = await FileConcreteReader.read();
+            const imagesData = uploadedFiles.map(img_url => ({
+                product_id: parseInt(productId),
+                img_url: img_url,
+            }));
+            const uploadedImgs = [];
+            for (const img of imagesData) {
+                const uploaded = await model.images.create({
+                    data: {
+                        product_id: img.product_id,
+                        img_url: img.img_url,
+                    },
+                })
+
+                uploadedImgs.push(uploaded);
+            }
+            // const images = await model.images.createMany({ data: imagesData, skipDuplicates: true })
+            return ResponseCreator.create(201, 'Create successfully!', uploadedImgs).send(res);
+        }
+
+    } catch (error) {
+        console.log('error:: ', error);
+        const logger = new Logger(new Error(new Date().getTime().toString(), __filename));
+        logger.write();
+        return ResponseCreator.create(500).send(res);
+    }
+
+}
+
 export {
     getProducts,
     getProductById,
     createProduct,
     updateProduct,
     deleteProduct,
-    undoDeleteProduct
+    undoDeleteProduct,
+    uploadImageProduct
 }
