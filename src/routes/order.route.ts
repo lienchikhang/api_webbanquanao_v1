@@ -11,10 +11,10 @@ orderRoute.get('/get-order-by-id', verifyClient, getOrderById);
 orderRoute.post('/create-order', verifyClient, createOrder);
 
 //cancelOrder
-orderRoute.delete('/cancel-order', verifyClient, cancelOrder);
+orderRoute.delete('/cancel-order/:orderId', cancelOrder);
 
 //changeOrderPayingState
-orderRoute.put('/update-order-pay', verifyClient, changeOrderPayingState)
+orderRoute.put('/update-order-pay/:orderId', changeOrderPayingState)
 
 
 export default orderRoute;

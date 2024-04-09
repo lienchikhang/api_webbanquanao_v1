@@ -112,7 +112,7 @@ const createOrder = async (req: Request, res: Response) => {
 
 const cancelOrder = async (req: Request, res: Response) => {
     try {
-        const { userId } = req.payload;
+        // const { userId } = req.payload;
         const { orderId } = req.params;
 
         if (!orderId || !numberChecker.isNumber(orderId) || textChecker.hasSpace(orderId) || textChecker.hasSpecialChar(orderId)) return ResponseCreator.create(400, 'Invalid order id', orderId).send(res);
@@ -124,6 +124,8 @@ const cancelOrder = async (req: Request, res: Response) => {
         })
 
         if (!order) return ResponseCreator.create(404, 'Order not found!', orderId).send(res);
+
+        if (order.is_paid) return ResponseCreator.create(400, 'Order has already been paid').send(res);
 
         //cancel order
         const cancel = await model.orders.update({
@@ -146,7 +148,6 @@ const cancelOrder = async (req: Request, res: Response) => {
 
 const changeOrderPayingState = async (req: Request, res: Response) => {
     try {
-        const { userId } = req.payload;
         const { orderId } = req.params;
 
         if (!orderId || !numberChecker.isNumber(orderId) || textChecker.hasSpace(orderId) || textChecker.hasSpecialChar(orderId)) return ResponseCreator.create(400, 'Invalid order id', orderId).send(res);
@@ -158,6 +159,8 @@ const changeOrderPayingState = async (req: Request, res: Response) => {
         })
 
         if (!order) return ResponseCreator.create(404, 'Order not found!', orderId).send(res);
+
+        if (order.is_cancel) return ResponseCreator.create(404, 'Order has already been canceled', orderId).send(res);
 
         //update paying state order
         const isPaid = await model.orders.update({
@@ -178,6 +181,13 @@ const changeOrderPayingState = async (req: Request, res: Response) => {
     }
 }
 
+//stats
+
+//canceledOrder
+
+//successOrder
+
+//summaryOrder
 
 export {
     getOrderById,
