@@ -1,4 +1,4 @@
-import { ICartDetail } from "../interfaces/cart.interface";
+import { ICartDetail, IGetCartDetail } from "../interfaces/cart.interface";
 import { ICate } from "../interfaces/cate.interface";
 import { IColor } from "../interfaces/color.interface";
 import { IPrice } from "../interfaces/price.interface";
@@ -127,8 +127,20 @@ class Data {
             cartId: cartDetail.cart_id,
             productId: cartDetail.product_id,
             amount: cartDetail.amount,
-            price: cartDetail.price
+            price: cartDetail.price,
         }
+    }
+
+    static convertGetCartDetails = (cartDetail: IGetCartDetail[]) => {
+        return cartDetail.map((cart) => {
+            return {
+                cartId: cart.cart_id,
+                productId: cart.Products.product_id,
+                amount: cart.amount,
+                price: cart.price,
+                image: cart.Products.Images.map((img) => img.img_url)
+            }
+        })
     }
 }
 

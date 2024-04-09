@@ -92,6 +92,16 @@ const createCartDetail = async (req: Request, res: Response) => {
             data: { product_id: parseInt(productId), cart_id: parseInt(cartId), amount: parseInt(amount), price: parseInt(price) }
         })
 
+        //update cart
+        await model.carts.update({
+            data: {
+                total_price: isExistCart.total_price + (newCartDetail.amount * newCartDetail.price)
+            },
+            where: {
+                cart_id: isExistCart.cart_id
+            }
+        })
+
         const convertedCartDetail = Data.convertCartDetail(newCartDetail);
 
         return ResponseCreator.create(201, 'Create successfully!', convertedCartDetail).send(res);
@@ -213,9 +223,56 @@ const updateAmountCartDetail = async (req: Request, res: Response) => {
 
 }
 
+const getCartsByUserId = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.payload;
+
+        //find cart
+        const cart = await model.carts.findFirst({
+            where: {
+                user_id: parseInt(userId)
+            }
+        })
+
+        //findCarts
+        const cartDetails = await model.cartDetail.findMany({
+            select: {
+                cart_id: true,
+                amount: true,
+                price: true,
+                Products: {
+                    select: {
+                        product_id: true,
+                        product_name: true,
+                        Images: {
+                            select: {
+                                img_url: true,
+                            },
+                            take: 1
+                        }
+                    }
+                }
+            },
+            where: {
+                cart_id: cart?.cart_id
+            }
+        })
+
+        //convert data
+        const convertedCarts = Data.convertGetCartDetails(cartDetails)
+
+        return ResponseCreator.create(200, 'Successfully!', convertedCarts).send(res);
+
+
+    } catch (error) {
+
+    }
+}
+
 export {
     createCart,
     createCartDetail,
     deleteCartDetail,
-    updateAmountCartDetail
+    updateAmountCartDetail,
+    getCartsByUserId
 }

@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
 import typeRoute from './type.route';
 import sizeRoute from './size.route';
 import categoryRoute from './cate.route';
@@ -19,7 +19,7 @@ rootRoute.use('/auth', authRoute);
 rootRoute.use('/price', priceRoute);
 rootRoute.use('/product', productRoute);
 rootRoute.use('/cart', cartRoute);
-rootRoute.use('/order', orderRoute);
+rootRoute.use('/order', orderRoute)
 
 
 export default rootRoute;
